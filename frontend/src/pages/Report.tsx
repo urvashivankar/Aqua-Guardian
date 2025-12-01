@@ -184,10 +184,12 @@ const Report = () => {
       }
 
       const responseData = await submitReport(submitData);
+
+      // Backend returns the created report object
       const aiClass = responseData.ai_class;
       const aiConfidence = responseData.ai_confidence;
 
-      if (aiClass) {
+      if (aiClass && aiConfidence) {
         toast({
           title: "Report Verified by AI",
           description: `Detected: ${aiClass} (${(aiConfidence * 100).toFixed(1)}% confidence). Your report has been filed.`,

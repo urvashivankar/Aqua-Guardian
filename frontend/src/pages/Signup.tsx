@@ -20,14 +20,14 @@ const Signup = () => {
     agreeToTerms: false,
   });
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { signup } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.email || !formData.password) {
       toast({
         title: "Missing Information",
@@ -65,11 +65,11 @@ const Signup = () => {
     }
 
     setIsLoading(true);
-    
+
     // Simulate API call delay
-    setTimeout(() => {
-      const success = signup(formData.email, formData.password, formData.name, formData.role);
-      
+    try {
+      const success = await signup(formData.email, formData.password, formData.name, formData.role);
+
       if (success) {
         toast({
           title: "Welcome to Aqua Guardian!",
@@ -83,9 +83,15 @@ const Signup = () => {
           variant: "destructive",
         });
       }
-      
+    } catch (error) {
+      toast({
+        title: "Signup Error",
+        description: "An unexpected error occurred.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const handleInputChange = (field: string, value: string | boolean) => {
@@ -107,7 +113,7 @@ const Signup = () => {
               </CardDescription>
             </div>
           </CardHeader>
-          
+
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-4">
@@ -136,7 +142,7 @@ const Signup = () => {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="password" className="text-foreground">Password</Label>
                   <Input
@@ -162,11 +168,11 @@ const Signup = () => {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="role" className="text-foreground">Role</Label>
-                  <Select 
-                    value={formData.role} 
+                  <Select
+                    value={formData.role}
                     onValueChange={(value: UserRole) => handleInputChange('role', value)}
                   >
                     <SelectTrigger className="mt-1 bg-background border-border focus:border-ocean-primary">
@@ -201,10 +207,10 @@ const Signup = () => {
                   </Label>
                 </div>
               </div>
-              
-              <Button 
-                type="submit" 
-                className="w-full wave-animation" 
+
+              <Button
+                type="submit"
+                className="w-full wave-animation"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -217,22 +223,22 @@ const Signup = () => {
                 )}
               </Button>
             </form>
-            
+
             <div className="mt-6 text-center">
               <p className="text-muted-foreground text-sm">
                 Already have an account?{' '}
-                <Link 
-                  to="/login" 
+                <Link
+                  to="/login"
                   className="text-ocean-primary hover:text-ocean-light transition-colors font-medium"
                 >
                   Sign in here
                 </Link>
               </p>
             </div>
-            
+
             <div className="mt-4 text-center">
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 className="text-muted-foreground hover:text-ocean-light transition-colors text-sm"
               >
                 ← Back to Home

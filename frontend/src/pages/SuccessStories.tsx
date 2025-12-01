@@ -182,7 +182,7 @@ const SuccessStories = () => {
                     <span>Key Achievements</span>
                   </h3>
                   <ul className="space-y-2">
-                    {story.results.map((result, resultIndex) => (
+                    {Array.isArray(story.results) && story.results.map((result: string, resultIndex: number) => (
                       <li key={resultIndex} className="flex items-start space-x-2 text-sm">
                         <div className="w-1.5 h-1.5 bg-success rounded-full mt-2 flex-shrink-0"></div>
                         <span className="text-muted-foreground">{result}</span>
@@ -195,7 +195,7 @@ const SuccessStories = () => {
                 <div>
                   <h4 className="font-medium text-foreground mb-2">Key Stakeholders</h4>
                   <div className="flex flex-wrap gap-2">
-                    {story.stakeholders.map((stakeholder, stakeholderIndex) => (
+                    {Array.isArray(story.stakeholders) && story.stakeholders.map((stakeholder: string, stakeholderIndex: number) => (
                       <Badge key={stakeholderIndex} variant="outline" className="text-xs">
                         {stakeholder}
                       </Badge>

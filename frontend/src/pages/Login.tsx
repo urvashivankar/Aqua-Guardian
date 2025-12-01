@@ -14,14 +14,14 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<UserRole>('Citizen');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { login } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       toast({
         title: "Missing Information",
@@ -32,11 +32,11 @@ const Login = () => {
     }
 
     setIsLoading(true);
-    
+
     // Simulate API call delay
-    setTimeout(() => {
-      const success = login(email, password, role);
-      
+    try {
+      const success = await login(email, password, role);
+
       if (success) {
         toast({
           title: "Welcome back!",
@@ -50,9 +50,15 @@ const Login = () => {
           variant: "destructive",
         });
       }
-      
+    } catch (error) {
+      toast({
+        title: "Login Error",
+        description: "An unexpected error occurred.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -70,7 +76,7 @@ const Login = () => {
               </CardDescription>
             </div>
           </CardHeader>
-          
+
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-4">
@@ -86,7 +92,7 @@ const Login = () => {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="password" className="text-foreground">Password</Label>
                   <Input
@@ -99,7 +105,7 @@ const Login = () => {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="role" className="text-foreground">Role</Label>
                   <Select value={role} onValueChange={(value: UserRole) => setRole(value)}>
@@ -116,10 +122,10 @@ const Login = () => {
                   </Select>
                 </div>
               </div>
-              
-              <Button 
-                type="submit" 
-                className="w-full wave-animation" 
+
+              <Button
+                type="submit"
+                className="w-full wave-animation"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -132,22 +138,22 @@ const Login = () => {
                 )}
               </Button>
             </form>
-            
+
             <div className="mt-6 text-center">
               <p className="text-muted-foreground text-sm">
                 Don't have an account?{' '}
-                <Link 
-                  to="/signup" 
+                <Link
+                  to="/signup"
                   className="text-ocean-primary hover:text-ocean-light transition-colors font-medium"
                 >
                   Sign up here
                 </Link>
               </p>
             </div>
-            
+
             <div className="mt-4 text-center">
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 className="text-muted-foreground hover:text-ocean-light transition-colors text-sm"
               >
                 ← Back to Home

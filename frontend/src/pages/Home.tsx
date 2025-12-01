@@ -61,48 +61,48 @@ const Home = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
 
         <div className="relative z-10 container mx-auto px-4 text-center animate-fade-in">
-          <div className="max-w-4xl mx-auto space-y-8">
+          <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
             <div className="space-y-4">
-              <Badge className="wave-animation text-lg px-6 py-2">
-                <Droplets className="h-4 w-4 mr-2" />
+              <Badge className="wave-animation text-sm md:text-lg px-4 md:px-6 py-1 md:py-2">
+                <Droplets className="h-3 w-3 md:h-4 md:w-4 mr-2" />
                 Protecting Water, Protecting Life
               </Badge>
-              <h1 className="text-6xl md:text-8xl font-bold text-foreground leading-tight">
+              <h1 className="text-4xl md:text-8xl font-bold text-foreground leading-tight">
                 Aqua
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-ocean-primary to-ocean-light">
                   Guardian
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed px-4">
                 Join the global movement to monitor, protect, and restore our planet's most precious resource through AI-powered water quality monitoring.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
               {isAuthenticated ? (
                 <>
-                  <Link to="/dashboard">
-                    <Button size="lg" className="wave-animation text-lg px-8 py-4 ocean-glow">
+                  <Link to="/dashboard" className="w-full sm:w-auto">
+                    <Button size="lg" className="w-full sm:w-auto wave-animation text-lg px-8 py-6 md:py-4 ocean-glow">
                       View Dashboard
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                   </Link>
-                  <Link to="/report">
-                    <Button variant="outline" size="lg" className="text-lg px-8 py-4 border-ocean-primary text-ocean-light hover:bg-ocean-primary/10">
+                  <Link to="/report" className="w-full sm:w-auto">
+                    <Button variant="outline" size="lg" className="w-full sm:w-auto text-lg px-8 py-6 md:py-4 border-ocean-primary text-ocean-light hover:bg-ocean-primary/10">
                       Report Pollution
                     </Button>
                   </Link>
                 </>
               ) : (
                 <>
-                  <Link to="/signup">
-                    <Button size="lg" className="wave-animation text-lg px-8 py-4 ocean-glow">
+                  <Link to="/signup" className="w-full sm:w-auto">
+                    <Button size="lg" className="w-full sm:w-auto wave-animation text-lg px-8 py-6 md:py-4 ocean-glow">
                       Join as Guardian
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                   </Link>
-                  <Link to="/how-to-use">
-                    <Button variant="outline" size="lg" className="text-lg px-8 py-4 border-ocean-primary text-ocean-light hover:bg-ocean-primary/10">
+                  <Link to="/how-to-use" className="w-full sm:w-auto">
+                    <Button variant="outline" size="lg" className="w-full sm:w-auto text-lg px-8 py-6 md:py-4 border-ocean-primary text-ocean-light hover:bg-ocean-primary/10">
                       Learn More
                     </Button>
                   </Link>

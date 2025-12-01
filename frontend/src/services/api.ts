@@ -31,8 +31,8 @@ const DEMO_SUCCESS_STORIES = [
         impact: { waterQualityImproved: 15, speciesRecovered: 3, livesImpacted: 2000, pollutionReduced: 25 },
         challenges: "High tides",
         solutions: "Floating barriers",
-        results: "Cleaner shoreline",
-        stakeholders: "Local NGOs"
+        results: ["Cleaner shoreline", "Reduced waste"],
+        stakeholders: ["Local NGOs", "Volunteers"]
     }
 ];
 
@@ -237,6 +237,16 @@ export const fetchMarineImpactMetrics = async () => {
     }
 };
 
+export const login = async (credentials: any) => {
+    const response = await api.post('/auth/login', credentials);
+    return response.data;
+};
+
+export const register = async (userData: any) => {
+    const response = await api.post('/auth/register', userData);
+    return response.data;
+};
+
 export const submitReport = async (formData: FormData) => {
     try {
         const response = await api.post('/reports/', formData, {
@@ -246,15 +256,8 @@ export const submitReport = async (formData: FormData) => {
         });
         return response.data;
     } catch (error) {
-        console.warn('Using demo response for report submission');
-        // Simulate AI verification delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        return {
-            id: "DEMO-" + Math.random().toString(36).substr(2, 9),
-            message: "Report submitted successfully (Demo Mode)",
-            ai_class: "Plastic Pollution",
-            ai_confidence: 0.95
-        };
+        console.error('Error submitting report:', error);
+        throw error;
     }
 };
 
