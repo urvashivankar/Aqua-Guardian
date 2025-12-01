@@ -249,14 +249,39 @@ export const register = async (userData: any) => {
 
 export const submitReport = async (formData: FormData) => {
     try {
+        console.log('Submitting report to:', `${API_URL}/reports/`);
+        console.log('FormData contents:', {
+            user_id: formData.get('user_id'),
+            latitude: formData.get('latitude'),
+            longitude: formData.get('longitude'),
+            severity: formData.get('severity'),
+            hasFile: formData.get('file') !== null
+        });
+
         const response = await api.post('/reports/', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
         });
+
+        console.log('Report submission successful:', response.data);
         return response.data;
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error submitting report:', error);
+
+        // Enhanced error logging for debugging
+        if (error.response) {
+            console.error('Response error:', {
+                status: error.response.status,
+                statusText: error.response.statusText,
+                data: error.response.data
+            });
+        } else if (error.request) {
+            console.error('Request error - no response received:', error.request);
+        } else {
+            console.error('Error details:', error.message);
+        }
+
         throw error;
     }
 };

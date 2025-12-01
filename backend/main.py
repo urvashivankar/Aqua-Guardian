@@ -31,10 +31,22 @@ app = FastAPI(
 )
 
 # CORS Configuration
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+# In production, use specific origins. In development, allow all.
+environment = os.getenv("ENVIRONMENT", "development")
+allowed_origins_str = os.getenv("ALLOWED_ORIGINS", "")
+
+if environment == "production" and allowed_origins_str:
+    # Production: Use specific allowed origins
+    allowed_origins = [origin.strip() for origin in allowed_origins_str.split(",") if origin.strip()]
+else:
+    # Development: Allow all origins
+    allowed_origins = ["*"]
+
+print(f"CORS Configuration: Environment={environment}, Allowed Origins={allowed_origins}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins if os.getenv("ENVIRONMENT") == "production" else ["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
