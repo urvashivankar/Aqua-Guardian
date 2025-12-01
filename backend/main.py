@@ -1,0 +1,115 @@
+"""
+AQUA Guardian API - Main Application
+Production-ready FastAPI application with security hardening.
+"""
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from api import auth, reports, ai, cleanup, rewards, dashboard, blockchain
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Import middleware (create __init__.py files if needed)
+try:
+    from middleware.security import SecurityMiddleware, RateLimitMiddleware
+    from middleware.logging import LoggingMiddleware
+    MIDDLEWARE_AVAILABLE = True
+except ImportError:
+    print("⚠️  Middleware not available. Running without security hardening.")
+    MIDDLEWARE_AVAILABLE = False
+
+# App configuration
+app = FastAPI(
+    title="AQUA Guardian API",
+    description="AI-Powered Water Pollution Monitoring & Reporting System",
+    version="1.0.0",
+    docs_url="/docs" if os.getenv("ENVIRONMENT") != "production" else None,
+    redoc_url="/redoc" if os.getenv("ENVIRONMENT") != "production" else None
+)
+
+# CORS Configuration
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins if os.getenv("ENVIRONMENT") == "production" else ["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Add production middleware
+if MIDDLEWARE_AVAILABLE:
+    app.add_middleware(SecurityMiddleware)
+    app.add_middleware(RateLimitMiddleware, requests_per_minute=60)
+    app.add_middleware(LoggingMiddleware)
+
+# Exception handlers
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Global exception handler for unhandled errors."""
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "Internal server error",
+            "message": "An unexpected error occurred. Please try again later.",
+            "path": str(request.url.path)
+        }
+    )
+
+# Health check endpoint
+@app.get("/health")
+def health_check():
+    """Health check endpoint for monitoring."""
+    return {
+        "status": "healthy",
+        "service": "AQUA Guardian API",
+        "version": "1.0.0"
+    }
+
+# API Routes
+app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+app.include_router(reports.router, prefix="/reports", tags=["Reports"])
+app.include_router(ai.router, prefix="/ai", tags=["AI Detection"])
+app.include_router(cleanup.router, prefix="/cleanup", tags=["Cleanup Events"])
+app.include_router(rewards.router, prefix="/rewards", tags=["Rewards & Gamification"])
+app.include_router(dashboard.router, prefix="/dashboard", tags=["Dashboard & Analytics"])
+app.include_router(blockchain.router, prefix="/blockchain", tags=["Blockchain"])
+
+@app.get("/")
+def root():
+    """Root endpoint with API information."""
+    return {
+        "message": "🌊 AQUA Guardian API is running",
+        "version": "1.0.0",
+        "description": "AI-Powered Water Pollution Monitoring & Reporting System",
+        "docs": "/docs" if os.getenv("ENVIRONMENT") != "production" else "Documentation disabled in production",
+        "endpoints": {
+            "health": "/health",
+            "auth": "/auth",
+            "reports": "/reports",
+            "ai": "/ai",
+            "cleanup": "/cleanup",
+            "rewards": "/rewards",
+            "dashboard": "/dashboard"
+        }
+    }
+
+# Startup event
+@app.on_event("startup")
+async def startup_event():
+    """Run on application startup."""
+    print("=" * 60)
+    print("🌊 AQUA Guardian API Starting...")
+    print("=" * 60)
+    print(f"Environment: {os.getenv('ENVIRONMENT', 'development')}")
+    print(f"Security Middleware: {'Enabled' if MIDDLEWARE_AVAILABLE else 'Disabled'}")
+    print("=" * 60)
+
+# Shutdown event
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Run on application shutdown."""
+    print("🌊 AQUA Guardian API Shutting down...")
